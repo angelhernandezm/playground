@@ -1,0 +1,32 @@
+var retval = TaskResult.Empty;
+
+  try {
+    			var n = 100000;
+			var primes = new List<int>();
+			primes.Add(2);
+			var nextPrime = 3;
+
+			while (primes.Count < n) {
+				var isPrime = true;
+				var sqrt = (int)Math.Sqrt(nextPrime);
+
+				for (var i = 0; primes[i] <= sqrt; i++) {
+					if (nextPrime % primes[i] == 0) {
+						isPrime = false;
+						break;
+					}
+				}
+
+				if (isPrime)
+					primes.Add(nextPrime);
+
+				nextPrime += 2;
+			}
+
+
+     retval.Tag = primes;  
+   } catch(Exception e) {
+        retval.LastException = e;
+   } 
+
+return retval;
