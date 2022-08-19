@@ -2,15 +2,15 @@ var retval = TaskResult.Empty;
 
    try {
 			var wikiPage = new StringBuilder();
-			wikiPage.AppendLine($"**Organization name:** {crmClient.OrganizationDetail.FriendlyName}\n");
-			wikiPage.AppendLine($"**Environment:** {crmClient.OrganizationDetail.EnvironmentId}\n");
+			wikiPage.AppendLine($"**Organization name:** {Context.ServiceClient.OrganizationDetail.FriendlyName}\n");
+			wikiPage.AppendLine($"**Environment:** {Context.ServiceClient.OrganizationDetail.EnvironmentId}\n");
 			wikiPage.AppendLine($"**Endpoints:**\n");
 
-			var endpoints = crmClient.OrganizationDetail.Endpoints.Values.ToList();
+			var endpoints = Context.ServiceClient.OrganizationDetail.Endpoints.Values.ToList();
 
 			endpoints.ForEach(q => wikiPage.AppendLine($"1. {q}"));
 
-			var metadata = crmClient.GetAllEntityMetadata()?.Where(r =>
+			var metadata = Context.ServiceClient.GetAllEntityMetadata()?.Where(r =>
 				(bool)r.IsCustomEntity && r.IsCustomizable.Value &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("adx") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("msdyn") &&
@@ -40,7 +40,7 @@ var retval = TaskResult.Empty;
 					</fetch >";
 
 				var fetchquery = new FetchExpression(fetch);
-				var count = crmClient.OrganizationWebProxyClient.RetrieveMultiple(fetchquery);
+				var count = Context.ServiceClient.OrganizationWebProxyClient.RetrieveMultiple(fetchquery);
 				var countVal = ((AliasedValue)count.Entities?.FirstOrDefault().Attributes?.FirstOrDefault().Value).Value;
 				wikiPage.AppendLine($"|{m.SchemaName}  | {m.CreatedOn.Value.ToShortDateString()}  | {m.ModifiedOn.Value.ToShortDateString()}  | {countVal} |");
 				} catch {
