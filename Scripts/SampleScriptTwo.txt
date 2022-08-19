@@ -23,6 +23,7 @@ var retval = TaskResult.Empty;
 				!r.EntitySetName.ToLowerInvariant().StartsWith("marketingform") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("datasync") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("featurecontrol") &&
+			      !r.EntitySetName.ToLowerInvariant().StartsWith("gssitsm") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("flowmachine") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("organizationdata") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("raw_azure")).ToList();
