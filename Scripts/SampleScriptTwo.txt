@@ -10,7 +10,7 @@ var retval = TaskResult.Empty;
 
 			endpoints.ForEach(q => wikiPage.AppendLine("1. "+ q));
 
-			var metadata = Context.ServiceClient.GetAllEntityMetadata()?.Where(r =>
+			var metadata = Context.ServiceClient.GetAllEntityMetadata().Where(r =>
 				(bool)r.IsCustomEntity && r.IsCustomizable.Value &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("adx") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("msdyn") &&
@@ -25,13 +25,13 @@ var retval = TaskResult.Empty;
 				!r.EntitySetName.ToLowerInvariant().StartsWith("featurecontrol") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("flowmachine") &&
 				!r.EntitySetName.ToLowerInvariant().StartsWith("organizationdata") &&
-				!r.EntitySetName.ToLowerInvariant().StartsWith("raw_azure"))?.ToList();
+				!r.EntitySetName.ToLowerInvariant().StartsWith("raw_azure")).ToList();
 
 			wikiPage.AppendLine("\n**Entities:**\n");
 			wikiPage.AppendLine("|**Entity**  | **Created on** |  **Modified on** | **Record count**  |");
 			wikiPage.AppendLine("|--|--|--|--|");
 
-			metadata?.ForEach(m => {
+			metadata.ForEach(m => {
 			  	try {
 					var fetch = "<fetch mapping ='logical' distinct ='false' aggregate ='true'>"+
 					"<entity name ='"+ m.SchemaName +"'>"+
@@ -41,7 +41,7 @@ var retval = TaskResult.Empty;
 
 				var fetchquery = new FetchExpression(fetch);
 				var count = Context.ServiceClient.OrganizationWebProxyClient.RetrieveMultiple(fetchquery);
-				var countVal = ((AliasedValue)count.Entities?.FirstOrDefault().Attributes?.FirstOrDefault().Value).Value;
+				var countVal = ((AliasedValue)count.Entities.FirstOrDefault().Attributes.FirstOrDefault().Value).Value;
 				wikiPage.AppendLine("|" + m.SchemaName + "  | " + m.CreatedOn.Value.ToShortDateString() + "  |  " +  m.ModifiedOn.Value.ToShortDateString() + " | " + countVal.ToString() +  " | ");
 				} catch {
 					// Let's ignore it. It's a virtual entity most likely
