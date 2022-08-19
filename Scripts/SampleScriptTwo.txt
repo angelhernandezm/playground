@@ -42,7 +42,7 @@ var retval = TaskResult.Empty;
 				var fetchquery = new FetchExpression(fetch);
 				var count = Context.ServiceClient.OrganizationWebProxyClient.RetrieveMultiple(fetchquery);
 				var countVal = ((AliasedValue)count.Entities?.FirstOrDefault().Attributes?.FirstOrDefault().Value).Value;
-				wikiPage.AppendLine("|"+ m.SchemaName + "  | "+ m.CreatedOn.Value.ToShortDateString() + "  |  " + " + m.ModifiedOn.Value.ToShortDateString() + "  | " + countVal.ToString() +  "|");
+				wikiPage.AppendLine("|" + m.SchemaName + "  | " + m.CreatedOn.Value.ToShortDateString() + "  |  " +  m.ModifiedOn.Value.ToShortDateString() + " | " + countVal.ToString() +  " | ");
 				} catch {
 					// Let's ignore it. It's a virtual entity most likely
 			 	}
