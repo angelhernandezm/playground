@@ -1,0 +1,60 @@
+var retval = TaskResult.Empty;
+
+   try {
+			var wikiPage = new StringBuilder();
+			wikiPage.AppendLine($"**Organization name:** {crmClient.OrganizationDetail.FriendlyName}\n");
+			wikiPage.AppendLine($"**Environment:** {crmClient.OrganizationDetail.EnvironmentId}\n");
+			wikiPage.AppendLine($"**Endpoints:**\n");
+
+			var endpoints = crmClient.OrganizationDetail.Endpoints.Values.ToList();
+
+			endpoints.ForEach(q => wikiPage.AppendLine($"1. {q}"));
+
+			var metadata = crmClient.GetAllEntityMetadata()?.Where(r =>
+				(bool)r.IsCustomEntity && r.IsCustomizable.Value &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("adx") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("msdyn") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("afk") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("msfp") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("activityfileattachment") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("bot") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("chat") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("conversationtranscript") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("marketingform") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("datasync") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("featurecontrol") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("flowmachine") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("organizationdata") &&
+				!r.EntitySetName.ToLowerInvariant().StartsWith("raw_azure"))?.ToList();
+
+			wikiPage.AppendLine($"\n**Entities:**\n");
+			wikiPage.AppendLine("|**Entity**  | **Created on** |  **Modified on** | **Record count**  |");
+			wikiPage.AppendLine("|--|--|--|--|");
+
+			metadata?.ForEach(m => {
+			  	try {
+					var fetch = $@"<fetch mapping ='logical' distinct ='false' aggregate ='true'>
+					<entity name ='{m.SchemaName}'>
+					<attribute name ='{m.PrimaryIdAttribute}' alias ='recordcount' aggregate ='count'/>
+					</entity >
+					</fetch >";
+
+				var fetchquery = new FetchExpression(fetch);
+				var count = crmClient.OrganizationWebProxyClient.RetrieveMultiple(fetchquery);
+				var countVal = ((AliasedValue)count.Entities?.FirstOrDefault().Attributes?.FirstOrDefault().Value).Value;
+				wikiPage.AppendLine($"|{m.SchemaName}  | {m.CreatedOn.Value.ToShortDateString()}  | {m.ModifiedOn.Value.ToShortDateString()}  | {countVal} |");
+				} catch {
+					// Let's ignore it. It's a virtual entity most likely
+			 	}
+ 			 });
+
+			 var timeStamp = DateTime.Now.ToShortDateString().Replace('/', '-') + "_" + DateTime.Now.ToShortTimeString().Replace(':', '~');
+			 var outputFile = $"{Path.GetTempPath()}wikipage_output_{timeStamp}.txt";
+ 			 File.WriteAllText(outputFile, wikiPage.ToString());
+
+			 retval.Tag = outputFile;
+   } catch(Exception e) {
+        retval.LastException = e;
+   } 
+
+return retval;
