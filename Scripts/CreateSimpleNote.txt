@@ -4,10 +4,10 @@ var retval = TaskResult.Empty;
        var note = new Entity("annotation");
 
        var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
-       note.Attributes["Subject"] = "Example note - Schedule Submittal";
-       note.Attributes["FileName"] = "Test_Schedule_File.txt";
-       note.Attributes["DocumentBody"] =  Convert.ToBase64String(fileBody);
-       note.Attributes["MimeType"] = "text/plain";
+       note.Attributes["subject"] = "Example note - Schedule Submittal";
+       note.Attributes["filename"] = "Test_Schedule_File.txt";
+       note.Attributes["documentbody"] =  Convert.ToBase64String(fileBody);
+       note.Attributes["mimetype"] = "text/plain";
 
        retval.Tag = Context.ServiceClient.Create(note);
    } catch(Exception e) {
