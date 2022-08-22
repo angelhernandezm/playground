@@ -1,0 +1,16 @@
+var retval = TaskResult.Empty;
+
+   try {
+       var note = new Entity("Annotation") as dynamic;
+
+       note.Subject = "Example note - Schedule Submittal";
+       note.FileName = "Test_Schedule_File.txt";
+       note.DocumentBody = Convert.ToBase64String(new UnicodeEncoding().GetBytes("This is a simple text file for development purposes.")));
+       note.MimeType = "text/plain";
+       
+       retval.Tag = Context.ServiceClient.Create(note);
+   } catch(Exception e) {
+        retval.LastException = e;
+   } 
+
+return retval;
