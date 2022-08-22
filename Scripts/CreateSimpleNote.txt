@@ -1,7 +1,7 @@
 var retval = TaskResult.Empty;
 
    try {
-       var note = new Entity("Annotation");
+       var note = new Entity("annotation");
 
        var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
        note.Attributes["Subject"] = "Example note - Schedule Submittal";
