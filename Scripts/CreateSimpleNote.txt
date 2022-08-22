@@ -1,14 +1,14 @@
 var retval = TaskResult.Empty;
 
    try {
-       var note = new Entity("Annotation") as dynamic;
+       var note = new Entity("Annotation");
 
        var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
-       note.Subject = "Example note - Schedule Submittal";
-       note.FileName = "Test_Schedule_File.txt";
-       note.DocumentBody = Convert.ToBase64String(fileBody);
-       note.MimeType = "text/plain";
-       
+       note.Attributes["Subject"] = "Example note - Schedule Submittal";
+       note.Attributes["FileName"] = "Test_Schedule_File.txt";
+       note.Attributes["DocumentBody"] =  Convert.ToBase64String(fileBody);
+       note.Attributes["MimeType"] = "text/plain";
+
        retval.Tag = Context.ServiceClient.Create(note);
    } catch(Exception e) {
         retval.LastException = e;
