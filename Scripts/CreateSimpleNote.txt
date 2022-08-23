@@ -11,6 +11,7 @@ var retval = TaskResult.Empty;
        schedule.Attributes["coi_FileName"] =  "TestScheduleFile.txt";
        schedule.Attributes["coi_name"] =  "Created by DynUtil";
        retval.Tag = Context.ServiceClient.Create(schedule);
+
   
        // Let's create attachment 
        var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
@@ -21,6 +22,7 @@ var retval = TaskResult.Empty;
        note.Attributes["objecttypecode"] = "10683"; // Entity name
        note.Attributes["objectid"] = Guid.NewGuid().ToString();
        retval.Tag = Context.ServiceClient.Create(note);
+
    } catch(Exception e) {
         retval.LastException = e;
    } 
