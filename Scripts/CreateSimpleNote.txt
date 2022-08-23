@@ -22,7 +22,7 @@ var retval = TaskResult.Empty;
        // Let's create attachment 
        var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
        note.Attributes["subject"] = "Example note - Schedule Submittal";
-       note.Attributes["filename"] = "TestScheduleFile.txt";
+       note.Attributes["filename"] = "TestScheduleFile-"+Guid.NewGuid().ToString()+".txt";
        note.Attributes["documentbody"] =  Convert.ToBase64String(fileBody);
        note.Attributes["mimetype"] = "text/plain";
        note.Attributes["objecttypecode"] = 10683;
