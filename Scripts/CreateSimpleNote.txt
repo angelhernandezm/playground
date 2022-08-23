@@ -11,7 +11,6 @@ var retval = TaskResult.Empty;
        schedule.Attributes["coi_filename"] =  "TestScheduleFile.txt";
        schedule.Attributes["coi_name"] =  "Created by DynUtil";
        retval.Tag = Context.ServiceClient.Create(schedule);
-
   
        // Let's create attachment 
        var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
