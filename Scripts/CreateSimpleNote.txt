@@ -18,8 +18,7 @@ var retval = TaskResult.Empty;
        note.Attributes["filename"] = "TestScheduleFile.txt";
        note.Attributes["documentbody"] =  Convert.ToBase64String(fileBody);
        note.Attributes["mimetype"] = "text/plain";
-       //note.Attributes["objecttypecode"] = new EntityReference("coi_schedulesubmittal", (Guid)  retval.Tag) ; // Entity name
-       note.Attributes["objecttypecode"] = new OptionSetValue(10683);
+       note.Attributes["objecttypecode"] = 10683;
        note.Attributes["objectid"] = Guid.NewGuid().ToString();
        retval.Tag = Context.ServiceClient.Create(note);
 
