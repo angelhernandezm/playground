@@ -8,7 +8,7 @@ var retval = TaskResult.Empty;
        schedule.Attributes["coi_endofmonth"] = new EntityReference("coi_EndofMonth", Guid.Parse("6DBF2EFC-9019-ED11-B83F-000D3A1036B3"));
        schedule.Attributes["coi_generalcontractor"] = new EntityReference("Account", Guid.Parse("A91C2FC4-A79A-EC11-B401-0022482FD240"));
        schedule.Attributes["coi_project"] = new EntityReference("coi_project", Guid.Parse("40B78C30-CB4B-EC11-8F8E-00224827FBD8"));
-       schedule.Attributes["coi_fileName"] =  "TestScheduleFile.txt";
+       schedule.Attributes["coi_filename"] =  "TestScheduleFile.txt";
        schedule.Attributes["coi_name"] =  "Created by DynUtil";
        retval.Tag = Context.ServiceClient.Create(schedule);
 
