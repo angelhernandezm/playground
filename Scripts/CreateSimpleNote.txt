@@ -2,13 +2,24 @@ var retval = TaskResult.Empty;
 
    try {
        var note = new Entity("annotation");
+       var schedule = new Entity("coi_schedulesubmittal");
 
+       // Let's create schedule submittal
+       schedule.Attributes["coi_EndofMonth"] = new EntityReference("coi_EndofMonth", "6DBF2EFC-9019-ED11-B83F-000D3A1036B3");
+       schedule.Attributes["coi_GeneralContractor"] = new EntityReference("Account", "A91C2FC4-A79A-EC11-B401-0022482FD240");
+       schedule.Attributes["coi_Project"] = new EntityReference("coi_project", "40B78C30-CB4B-EC11-8F8E-00224827FBD8");
+       schedule.Attributes["coi_FileName"] =  "TestScheduleFile.txt";
+       schedule.Attributes["coi_name"] =  "Created by DynUtil";
+       retval.Tag = Context.ServiceClient.Create(schedule);
+  
+       // Let's create attachment 
        var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
        note.Attributes["subject"] = "Example note - Schedule Submittal";
        note.Attributes["filename"] = "TestScheduleFile.txt";
        note.Attributes["documentbody"] =  Convert.ToBase64String(fileBody);
        note.Attributes["mimetype"] = "text/plain";
-
+       note.Attributes["objecttypecode"] = "10683"; // Entity name
+       note.Attributes["objectid"] = Guid.NewGuid().ToString();
        retval.Tag = Context.ServiceClient.Create(note);
    } catch(Exception e) {
         retval.LastException = e;
