@@ -1,7 +1,6 @@
 var retval = TaskResult.Empty;
 
    try {
-       var note = new Entity("annotation");
        var schedule = new Entity("coi_schedulesubmittal");
        var scheduleTypes = new int[] {100000000, 100000001, 100000002, 
 						  100000003, 100000004};
@@ -19,6 +18,7 @@ var retval = TaskResult.Empty;
   
        // Let's create attachments 
        for (var x = 0; x < 5; x++) {
+         var note = new Entity("annotation");   
          var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
     	   note.Attributes["subject"] = "Example note - Schedule Submittal";
          note.Attributes["filename"] = "TestScheduleFile-"+Guid.NewGuid().ToString()+".txt";
