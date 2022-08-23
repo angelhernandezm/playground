@@ -14,7 +14,7 @@ var retval = TaskResult.Empty;
        schedule.Attributes["coi_filename"] =  "TestScheduleFile.txt";
        schedule.Attributes["coi_name"] =  "Created by DynUtil";
        schedule.Attributes["coi_scheduletype"] =  new OptionSetValue(scheduleTypes[index]);
-       retval.Tag = Context.ServiceClient.Create(schedule);
+       var scheduleid = Context.ServiceClient.Create(schedule);
   
        // Let's create attachments 
        for (var x = 0; x < 5; x++) {
@@ -25,7 +25,7 @@ var retval = TaskResult.Empty;
 	   note.Attributes["documentbody"] =  Convert.ToBase64String(fileBody);
          note.Attributes["mimetype"] = "text/plain";
          note.Attributes["objecttypecode"] = 10683;
-         note.Attributes["objectid"] = new EntityReference("coi_schedulesubmittal", (Guid) retval.Tag);
+         note.Attributes["objectid"] = new EntityReference("coi_schedulesubmittal", scheduleid);
          retval.Tag = Context.ServiceClient.Create(note);
        } 
    } catch(Exception e) {
