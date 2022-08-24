@@ -17,7 +17,7 @@ var retval = TaskResult.Empty;
        var scheduleid = Context.ServiceClient.Create(schedule);
   
        // Let's create attachments 
-       for (var x = 0; x < 5; x++) {
+       for (var x = 0; x <= 5; x++) {
          var note = new Entity("annotation");   
          var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
     	   note.Attributes["subject"] = "Example note - Schedule Submittal";
