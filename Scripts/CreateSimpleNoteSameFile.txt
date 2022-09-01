@@ -15,7 +15,7 @@ var retval = TaskResult.Empty;
        schedule.Attributes["coi_project"] = new EntityReference("coi_project", Guid.Parse("40B78C30-CB4B-EC11-8F8E-00224827FBD8"));
        schedule.Attributes["coi_filename"] =  "TestScheduleFile.txt";
        schedule.Attributes["coi_name"] =  "Created by DynUtil";
-       schedule.Attributes["coi_scheduletype"] =  new OptionSetValue(scheduleTypes[index]);
+       schedule.Attributes["coi_scheduletype"] =  new OptionSetValue(scheduleTypes[0]);
 
        retval.Tag = Context.ServiceClient.Create(schedule);
   
