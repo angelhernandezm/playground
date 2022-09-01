@@ -1,0 +1,36 @@
+var retval = TaskResult.Empty;
+
+   try {
+       var note = new Entity("annotation");
+       var schedule = new Entity("coi_schedulesubmittal");
+       var scheduleTypes = new int[] {100000000, 100000001, 100000002, 
+						  100000003, 100000004};
+       
+
+       // Let's create schedule submittal
+       var rand = new Random();
+       var index = rand.Next(scheduleTypes.Length);
+       schedule.Attributes["coi_generalcontractor"] = new EntityReference("account", Guid.Parse("A91C2FC4-A79A-EC11-B401-0022482FD240"));
+       schedule.Attributes["coi_endofmonth"] = new EntityReference("coi_endofmonth", Guid.Parse("6DBF2EFC-9019-ED11-B83F-000D3A1036B3"));
+       schedule.Attributes["coi_project"] = new EntityReference("coi_project", Guid.Parse("40B78C30-CB4B-EC11-8F8E-00224827FBD8"));
+       schedule.Attributes["coi_filename"] =  "TestScheduleFile.txt";
+       schedule.Attributes["coi_name"] =  "Created by DynUtil";
+       schedule.Attributes["coi_scheduletype"] =  new OptionSetValue(scheduleTypes[index]);
+
+       retval.Tag = Context.ServiceClient.Create(schedule);
+  
+       // Let's create attachment 
+       var fileBody = new UnicodeEncoding().GetBytes("This is a simple text file for development purposes."); 
+       note.Attributes["subject"] = "Example note - Schedule Submittal";
+       note.Attributes["filename"] = "TestScheduleFile-SameFile.txt";
+       note.Attributes["documentbody"] =  Convert.ToBase64String(fileBody);
+       note.Attributes["mimetype"] = "text/plain";
+       note.Attributes["objecttypecode"] = 10683;
+       note.Attributes["objectid"] = new EntityReference("coi_schedulesubmittal", (Guid) retval.Tag);
+       retval.Tag = Context.ServiceClient.Create(note);
+
+   } catch(Exception e) {
+        retval.LastException = e;
+   } 
+
+return retval; 
