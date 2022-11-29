@@ -1,0 +1,41 @@
+var retval = TaskResult.Empty;
+
+   try {
+       var query = "<fetch top='50'>"+
+				"<entity name='systemuser'>"+
+				"<filter>"+
+				"<condition attribute='windowsliveid' operator='eq' value='{0}' />"+
+				"</filter>"+
+				"</entity>"+
+				"</fetch>"; 
+
+       var usersToAdd = System.IO.File.ReadAllLines(@"c:\temp\userstoadd.txt");    
+
+       foreach(var u in usersToAdd) {
+         var userQry = string.Format(query, u);
+         var users = Context.ServiceClient.OrganizationWebProxyClient.RetrieveMultiple(new FetchExpression(userQry)); 
+
+          foreach(var e in users.Entities) {
+             var mappingQuery = "<fetch top='50'>"+ 
+			                  "<entity name='coi_schedulers'>"+
+				   		    "<filter>"+
+				             "<condition attribute='coi_schedulersname' operator='eq' value='{0}' />"+
+				             "</filter>"+
+				             "</entity>"+
+		                      "</fetch>";
+
+             var checkForUser = string.Format(mappingQuery, e.Attributes["systemuserid"]); 
+             var existingMapping = Context.ServiceClient.OrganizationWebProxyClient.RetrieveMultiple(new FetchExpression(checkForUser)); 
+
+             if (existingMapping != null && existingMapping.Entities != null && existingMapping.Entities.Count == 0) {
+                var newMapping = new Entity("coi_schedulers");
+                newMapping["coi_schedulersname"] = new EntityReference("systemuser", (Guid) e.Attributes["systemuserid"]);
+			  Context.ServiceClient.Create(newMapping);
+             } 
+          }   
+       } 
+   } catch(Exception e) {
+        retval.LastException = e;
+   } 
+
+return retval;  
