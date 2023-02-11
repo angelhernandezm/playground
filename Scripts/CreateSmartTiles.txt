@@ -1,0 +1,62 @@
+ var retval = TaskResult.Empty;
+
+   try {
+      // Let's prepare information used to create records
+	  
+	 var xdoc = XDocument.Load(@"c:\temp\SmartTileImport.xml");
+	 var elements = xdoc.Root.Elements().ToList();
+	 var mappedChild = new Dictionary<string, string> { {"name", "coi_name"}, { "caption", "coi_caption" },
+										  		        { "isEnabled", "coi_is_enabled" }, {"displayOrder", "coi_display_order"},
+														{"bubbleColor", "coi_bubble_color"}}.ToList();
+	  var mappedParent = new Dictionary<string, string> { {"caption", "coi_caption"}, { "featureName", "coi_featurename" },
+	                                                      { "isEnabled", "coi_isenabled" }, {"position", "coi_position"} }.ToList();  
+   
+      elements.ForEach(n => {
+					var smartTileRegister = new Dictionary<string, object>();
+
+					mappedParent.ForEach(r => {
+						var value = string.Equals(r.Value, "coi_isenabled", StringComparison.OrdinalIgnoreCase) && n.Element(r.Key) != null ? bool.Parse(n.Element(r.Key).Value) :
+							string.Equals(r.Value, "coi_position", StringComparison.OrdinalIgnoreCase) && n.Element(r.Key) != null ? (object)int.Parse(n.Element(r.Key).Value) : 
+							n.Element(r.Key) != null ? 	n.Element(r.Key).Value : null;
+						smartTileRegister.Add(r.Value, value);
+					});
+
+					var moduleList = new List<Dictionary<string, object>>();
+
+					var modules = n.Element("smartTileModules").Elements().ToList();
+
+					modules.ForEach(m => {
+						var smartTileModules = new Dictionary<string, object>();
+						mappedChild.ForEach(r => {
+							var value = string.Equals(r.Value, "coi_is_enabled", StringComparison.OrdinalIgnoreCase) && m.Attribute(r.Key) != null  ? bool.Parse(m.Attribute(r.Key).Value) :
+								string.Equals(r.Value, "coi_display_order", StringComparison.OrdinalIgnoreCase) && m.Attribute(r.Key) != null ? (object)int.Parse(m.Attribute(r.Key).Value) : 
+								m.Attribute(r.Key) != null ? m.Attribute(r.Key).Value : null;
+							smartTileModules.Add(r.Value, value);
+						});
+						moduleList.Add(smartTileModules);
+					});
+					
+					// Create data in dataverse (parent entity)
+					var parentAttributes = smartTileRegister.ToList();
+					var smartTile = new Entity("coi_smart_tile_register");
+					var regions = new int[] {30, 31, 32, 33};
+					parentAttributes.ForEach(a => smartTile.Attributes[a.Key] = a.Value);
+					var regionChoice = new List<OptionSetValue>();
+					Array.ForEach(regions, r => regionChoice.Add(new OptionSetValue(r)));
+					smartTile.Attributes["coi_applicable_region"] = new OptionSetValueCollection(regionChoice);
+					var smartTileid = Context.ServiceClient.Create(smartTile);
+					
+					// Create related modules
+					moduleList.ForEach(t => {
+					   var newmodule = new Entity("coi_smart_tile_modules"); 
+					   var moduleAttr = t.ToList();
+					   moduleAttr.ForEach(a => newmodule.Attributes[a.Key] = a.Value);
+					   newmodule.Attributes["coi_smart_tile_app_id"] = new EntityReference("coi_smart_tile_register", smartTileid);
+					   Context.ServiceClient.Create(newmodule);
+					});
+			});
+   } catch(Exception e) {
+        retval.LastException = e;
+   } 
+
+return retval;  
