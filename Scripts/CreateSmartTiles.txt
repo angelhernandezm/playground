@@ -9,13 +9,15 @@
 										  		        { "isEnabled", "coi_is_enabled" }, {"displayOrder", "coi_display_order"},
 														{"bubbleColor", "coi_bubble_color"}}.ToList();
 	  var mappedParent = new Dictionary<string, string> { {"caption", "coi_caption"}, { "featureName", "coi_featurename" },
-	                                                      { "isEnabled", "coi_isenabled" }, {"position", "coi_position"} }.ToList();  
+	                                                      { "isEnabled", "coi_isenabled" }, {"position", "coi_position"},
+														  {"openInNewTab", "coi_open_report_in_new_tab"}}.ToList();  
    
       elements.ForEach(n => {
 					var smartTileRegister = new Dictionary<string, object>();
 
 					mappedParent.ForEach(r => {
 						var value = string.Equals(r.Value, "coi_isenabled", StringComparison.OrdinalIgnoreCase) && n.Element(r.Key) != null ? bool.Parse(n.Element(r.Key).Value) :
+						    string.Equals(r.Value, "coi_open_report_in_new_tab", StringComparison.OrdinalIgnoreCase) && n.Element(r.Key) != null ? bool.Parse(n.Element(r.Key).Value) :
 							string.Equals(r.Value, "coi_position", StringComparison.OrdinalIgnoreCase) && n.Element(r.Key) != null ? (object)int.Parse(n.Element(r.Key).Value) : 
 							n.Element(r.Key) != null ? 	n.Element(r.Key).Value : null;
 						smartTileRegister.Add(r.Value, value);
