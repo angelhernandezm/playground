@@ -5,7 +5,7 @@
 	  
 	 var xdoc = XDocument.Load(@"c:\temp\SmartTileImport.xml");
 	 var elements = xdoc.Root.Elements().ToList();
-	 var mappedChild = new Dictionary<string, string> { {"name", "coi_name"}, { "caption", "coi_caption" },
+	 var mappedChild = new Dictionary<string, string> { {"name", "coi_codename"}, { "caption", "coi_name" },
 										  		        { "isEnabled", "coi_is_enabled" }, {"displayOrder", "coi_display_order"},
 														{"bubbleColor", "coi_bubble_color"}}.ToList();
 	  var mappedParent = new Dictionary<string, string> { {"caption", "coi_caption"}, { "featureName", "coi_featurename" },
