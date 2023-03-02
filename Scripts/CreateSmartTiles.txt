@@ -7,7 +7,7 @@
 	 var elements = xdoc.Root.Elements().ToList();
 	 var mappedChild = new Dictionary<string, string> { {"name", "coi_codename"}, { "caption", "coi_name" },
 										  		        { "isEnabled", "coi_is_enabled" }, {"displayOrder", "coi_display_order"},
-														{"bubbleColor", "coi_bubble_color"}}.ToList();
+														{"bubbleColor", "coi_bubble_color"}, {"tooltip", "coi_tooltip"}}.ToList();
 	  var mappedParent = new Dictionary<string, string> { {"caption", "coi_caption"}, { "featureName", "coi_featurename" },
 	                                                      { "isEnabled", "coi_isenabled" }, {"position", "coi_position"},
 														  {"openInNewTab", "coi_open_report_in_new_tab"}}.ToList();  
