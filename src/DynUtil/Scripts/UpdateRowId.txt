@@ -1,0 +1,53 @@
+var retval = TaskResult.Empty;
+
+    var query = @"<fetch>
+		  <entity name='coi_materialmaster'>
+    		    <attribute name='coi_materialmasterid' />
+    		    <order attribute='coi_materialmasterid' />
+  		  </entity>
+   	       </fetch>";
+
+   try {
+        var updateFn = new Func<EntityCollection, int, int>((a, b) => {
+              var count = b; 
+
+              foreach(var i in a.Entities) {                
+                ++count;
+                i["coi_row_id"] = count.ToString();
+                Context.ServiceClient.Update(i);
+              } 
+
+            return count;
+        });
+
+        var page = 2; 
+        var fe = new FetchExpression(query); 
+        var conversionReq = new FetchXmlToQueryExpressionRequest {FetchXml = fe.Query };
+        var conversionResp = (FetchXmlToQueryExpressionResponse) Context.ServiceClient.Execute(conversionReq);   
+        var result = new List<Entity>();    
+        var entities = Context.ServiceClient.RetrieveMultiple(conversionResp.Query);
+        result.AddRange(entities.Entities);      
+
+        var recCount = updateFn(entities, 0);
+
+ 	while (entities.MoreRecords)   {
+                conversionResp.Query.PageInfo = new PagingInfo   {
+                    PagingCookie = entities.PagingCookie,
+                    PageNumber = page
+                };
+
+           entities = Context.ServiceClient.RetrieveMultiple(conversionResp.Query);
+           result.AddRange(entities.Entities);
+           
+           recCount = updateFn(entities, recCount);
+
+           page++;
+        }  
+
+        retval.Tag = "It Works!!!";   
+
+   } catch(Exception e) {
+        retval.LastException = e;
+   } 
+
+return retval;  
