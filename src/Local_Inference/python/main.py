@@ -261,18 +261,14 @@ class TinyImageNetCnn:
         self.__export_to_onnx()
 
     def __export_to_onnx(self, output_path="tiny_imagenet_classifier.onnx"):
-        print("\nExporting model to ONNX format...")
         tf = self.__tf
         tf2onnx = self.__tf2onnx
-        # 1. Get real input name
-        raw_name = self.model.inputs[0].name
-        input_name = raw_name.split(":")[0]
-        # 2. Create concrete function
-        input_spec = tf.TensorSpec([None, 64, 64, 3], tf.float32, name=input_name)
-        concrete_fn = tf.function(self.model).get_concrete_function(input_spec)
-        # 3. Convert using concrete function
-        model_proto, _ = tf2onnx.convert.from_function(concrete_fn, input_signature=[input_spec], opset=17,
-                                                      output_path=output_path)
+        print("\nExporting model to ONNX format...")
+        # 1. Save as SavedModel
+        saved_model_dir = "saved_model_temp"
+        self.model.save(saved_model_dir)
+        # 2. Convert SavedModel to ONNX
+        model_proto, _ = tf2onnx.convert.from_saved_model(saved_model_dir, opset=17, output_path=output_path)
         print(f"ONNX model saved to: {output_path}")
 
 class TestCaseRunner:
