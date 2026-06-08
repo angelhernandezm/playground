@@ -263,16 +263,14 @@ class TinyImageNetCnn:
     def __export_to_onnx(self, output_path="tiny_imagenet_classifier.onnx"):
         print("\nExporting model to ONNX format...")
 
-        # Use the model’s actual input name
-        input_name = self.model.input_names[0]
+        # Extract the actual input tensor name (e.g., "input_1:0")
+        raw_name = self.model.inputs[0].name
+        input_name = raw_name.split(":")[0]  # remove ":0"
 
-        # Input signature for Tiny ImageNet (64x64 RGB)
         spec = (self.__tf.TensorSpec((None, 64, 64, 3), self.__tf.float32, name=input_name),)
 
-        # Convert and save
-        model_proto, _ = self.__tf2onnx.convert.from_keras(self.model, input_signature=spec,
-                                                           opset=17, output_path=output_path)
-
+        model_proto, _ = self.__tf2onnx.convert.from_keras(self.model, input_signature=spec, opset=17,
+                                                          output_path=output_path)
         print(f"ONNX model saved to: {output_path}")
 
 class TestCaseRunner:
