@@ -261,14 +261,18 @@ class TinyImageNetCnn:
         self.__export_to_onnx()
 
     def __export_to_onnx(self, output_path="tiny_imagenet_classifier.onnx"):
-        tf = self.__tf
-        tf2onnx = self.__tf2onnx
         print("\nExporting model to ONNX format...")
-        # 1. Export SavedModel (TF 2.15+ API)
         saved_model_dir = "saved_model_temp"
         self.model.export(saved_model_dir)
-        # 2. Convert SavedModel → ONNX
-        model_proto, _ = tf2onnx.convert.from_saved_model(saved_model_dir, opset=17, output_path=output_path)
+
+        # Let's save model via CLI because we're using TF 2.15+
+        subprocess.run([
+            "python", "-m", "tf2onnx.convert",
+            "--saved-model", saved_model_dir,
+            "--output", output_path,
+            "--opset", "17"
+        ], check=True)
+
         print(f"ONNX model saved to: {output_path}")
 
 class TestCaseRunner:
