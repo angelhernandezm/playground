@@ -264,10 +264,10 @@ class TinyImageNetCnn:
         tf = self.__tf
         tf2onnx = self.__tf2onnx
         print("\nExporting model to ONNX format...")
-        # 1. Save as SavedModel
+        # 1. Export SavedModel (TF 2.15+ API)
         saved_model_dir = "saved_model_temp"
-        self.model.save(saved_model_dir)
-        # 2. Convert SavedModel to ONNX
+        self.model.export(saved_model_dir)
+        # 2. Convert SavedModel → ONNX
         model_proto, _ = tf2onnx.convert.from_saved_model(saved_model_dir, opset=17, output_path=output_path)
         print(f"ONNX model saved to: {output_path}")
 
